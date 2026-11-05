@@ -36,6 +36,11 @@
 -keep class com.kenai.** { *; }
 -keep class com.github.hypfvieh.** { *; }
 -keep class org.freedesktop.dbus.** { *; }
+# dbus-java discovers its Unix-socket transport with ServiceLoader. ProGuard keeps
+# the provider classes above, but resource files are a separate shrinking surface;
+# without this descriptor the packaged app has no transport and both MPRIS and SNI
+# fail while the unshrunk `run` task continues to work.
+-keepresourcefiles META-INF/services/org.freedesktop.dbus.spi.transport.ITransportProvider
 -keep class org.slf4j.** { *; }
 -keep class org.eclipse.paho.** { *; }
 
