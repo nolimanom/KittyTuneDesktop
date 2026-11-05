@@ -148,6 +148,14 @@ jobs:
       - name: Build Debian & RPM Packages
         run: ./gradlew packageReleaseDeb packageReleaseRpm
 
+      - name: Verify Linux D-Bus transport survived release shrinking
+        shell: bash
+        run: |
+          set -euo pipefail
+          transport_jar=$(find build/compose/binaries -path '*/main-release/app/*/lib/app/dbus-java-transport-jnr-unixsocket*.jar' -print -quit)
+          test -n "$transport_jar"
+          test "$(unzip -p "$transport_jar" META-INF/services/org.freedesktop.dbus.spi.transport.ITransportProvider)" = "org.freedesktop.dbus.transport.jnr.JnrUnixSocketTransportProvider"
+
       - name: Get version from tag or build file
         id: get_version
         run: |
@@ -302,6 +310,14 @@ jobs:
 
       - name: Build Debian & RPM Packages
         run: ./gradlew packageReleaseDeb packageReleaseRpm
+
+      - name: Verify Linux D-Bus transport survived release shrinking
+        shell: bash
+        run: |
+          set -euo pipefail
+          transport_jar=$(find build/compose/binaries -path '*/main-release/app/*/lib/app/dbus-java-transport-jnr-unixsocket*.jar' -print -quit)
+          test -n "$transport_jar"
+          test "$(unzip -p "$transport_jar" META-INF/services/org.freedesktop.dbus.spi.transport.ITransportProvider)" = "org.freedesktop.dbus.transport.jnr.JnrUnixSocketTransportProvider"
 
       - name: Get version from tag or build file
         id: get_version
